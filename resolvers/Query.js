@@ -1,13 +1,17 @@
 
 exports.Query =  {
     
-    products: () => {
-        return products
+    products: (parent, args, context) => {
+        return context.products
     },
 
 
-    categories: () => {
-        return categories
+    reviews: (parent, args, context) => {
+        return context.reviews
+    },
+
+    categories: (parent, args, context) => {
+        return context.categories
     },
 
 
@@ -23,5 +27,13 @@ exports.Query =  {
         const categories = context.categories
         const category = categories.find(category => category.id === categoryID)
         return category
+    },
+
+    review: (_parent, args, context) => {
+        const reviews = context.reviews
+        const reviewID = args.id
+        const review = reviews.filter(reviewID)
+        return review        
     }
+
 }

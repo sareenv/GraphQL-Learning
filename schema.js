@@ -5,6 +5,18 @@ const typeDefs = gql`
         product(id: ID!): Product
         categories: [Category]
         category(id: ID!): Category
+        reviews: [Review]
+        review(id: ID!): Review
+    }
+
+    type Review {
+        id: ID!
+        date: String
+        title: String
+        productId: ID
+        product: Product
+        comment: String
+        rating: Int
     }
 
     type Category {
@@ -22,7 +34,8 @@ const typeDefs = gql`
         price: Float!, 
         onSale: Boolean,
         categoryID: ID, 
-        category: Category
+        category: Category, 
+        reviews: [Review]
     }
 `
 

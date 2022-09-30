@@ -1,21 +1,23 @@
 const {ApolloServer, gql} = require('apollo-server');
 const { typeDefs } = require('./schema')
-const {products, categories} = require('./db')
+const {products, categories, reviews} = require('./db')
 const { Query } = require('./resolvers/Query')
 const { Product } = require('./resolvers/Product')
 const { Category } = require('./resolvers/Category')
+const { Review } = require('./resolvers/Review')
 
-// tydef and the resolvers to make this running
 const server = new ApolloServer({
     typeDefs, 
     resolvers: {
         Query: Query, 
         Product: Product, 
-        Category: Category
+        Category: Category,
+        Review: Review
     }, 
     context: {
         products, 
-        categories
+        categories, 
+        reviews
     }
 })
 
