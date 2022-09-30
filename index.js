@@ -3,23 +3,6 @@ const {ApolloServer, gql} = require('apollo-server');
 // scaler type - String, Int, float, Boolean
 // object type - defined in the gql section. 
 
-const typeDefs = gql`
-    type Query {
-        hello: [String!] 
-        products: [Product]!
-        product(id: ID!): Product
-    }
-
-    type Product {
-        id: String!,
-        name: String!, 
-        description: String!, 
-        quantity: Int!, 
-        image: String!
-        price: Float!, 
-        onSale: Boolean
-    }
-`
 
 const products = [
     {
@@ -30,6 +13,7 @@ const products = [
       price: 42.44,
       image: "img-1",
       onSale: false,
+      categoryID: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70"
     },
     {
       id: "c2af9adc-d0b8-4d44-871f-cef66f86f7f6",
@@ -39,6 +23,7 @@ const products = [
       price: 53.5,
       image: "img-2",
       onSale: false,
+      categoryID: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70"
     },
     {
       id: "2c931e7e-510f-49e5-aed6-d6b44087e5a1",
@@ -48,6 +33,7 @@ const products = [
       price: 1.33,
       image: "img-3",
       onSale: true,
+      categoryID: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70"
     },
     {
       id: "404daf2a-9b97-4b99-b9af-614d07f818d7",
@@ -104,22 +90,79 @@ const products = [
       onSale: false,
     },
   ];
+
+  const categories = [
+    {
+      id: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70",
+      name: "Kitchen",
+    },
+    {
+      id: "34115aac-0ff5-4859-8f43-10e8db23602b",
+      name: "Garden",
+    },
+    {
+      id: "d914aec0-25b2-4103-9ed8-225d39018d1d",
+      name: "Sports",
+    },
+  ];
   
+const typeDefs = gql`
+    type Query {
+        products: [Product]!
+        product(id: ID!): Product
+        categories: [Category]
+        category(id: ID!): Category
+    }
+
+    type Category {
+        id: ID!
+        name: String!,
+        products: [Product!]
+    }
+
+    type Product {
+        id: ID!,
+        name: String!, 
+        description: String!, 
+        quantity: Int!, 
+        image: String!
+        price: Float!, 
+        onSale: Boolean,
+        categoryID: ID
+    }
+`
 
 const resolvers = {
     Query: {
-        hello: () => {
-            return null
-        },
-
+    
         products: () => {
             return products
         },
+
+
+        categories: () => {
+            return categories
+        },
+
 
         product: (_parent, args, _context) => {
             const productID = args.id
             const product = products.find(product => product.id === productID)
             return product
+        },
+
+        category: (_parent, args, _context) => {
+            const categoryID = args.id
+            const category = categories.find(category => category.id === categoryID)
+            return category
+        }
+    },
+
+    Category: {
+        products: (parent, args, context) => {
+            const categoryId = parent.id
+            const categoryProducts = products.filter(product => product.categoryID === categoryId)
+            return categoryProducts
         }
     }
 }
